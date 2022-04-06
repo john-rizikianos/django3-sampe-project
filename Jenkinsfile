@@ -6,7 +6,7 @@ pipeline {
         stage('Build') {
             steps {
                 // Get some code from a GitHub repository
-                git branch: 'main', url: 'https://github.com/tsadimas/django3-sampe-project.git'
+                git branch: 'main', url: 'https://github.com/john-rizikianos/django3-sampe-project.git'
 
                 
             }
@@ -38,26 +38,26 @@ pipeline {
         }
         stage('Prepare DB') {            
             steps {
-                sshagent (credentials: ['ssh-deployment-1']) {
+                //sshagent (credentials: ['ssh-deployment-1']) {
                     sh '''
                         pwd
                         echo $WORKSPACE
 
                         ansible-playbook -i ~/workspace/ansible-project/hosts.yml -l database ~/workspace/ansible-project/playbooks/postgres.yml
                         '''
-            }
+            //}
             }
         }
-        stage('deploym to vm 1') {
-            steps{
-                sshagent (credentials: ['ssh-deployment-1']) {
-                    sh '''
-                        ansible-playbook -i ~/workspace/ansible-project/hosts.yml -l deploymentservers ~/workspace/ansible-project/playbooks/django-project-install.yml
-                    '''
-                }
+        // stage('deploym to vm 1') {
+        //     steps{
+        //         sshagent (credentials: ['ssh-deployment-1']) {
+        //             sh '''
+        //                 ansible-playbook -i ~/workspace/ansible-project/hosts.yml -l deploymentservers ~/workspace/ansible-project/playbooks/django-project-install.yml
+        //             '''
+        //         }
 
-            }
+        //     }
 
-        }
+        // }
     }
 }
