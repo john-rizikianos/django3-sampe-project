@@ -30,8 +30,8 @@ pipeline {
                 '''
 
                 sh '''
-                    mkdir -p ~/workspace/ansible-project/files/certs
-                    cd ~/workspace/ansible-project/files/certs
+                    mkdir -p ~/workspace/ansible-pipe/files/certs
+                    cd ~/workspace/ansible-pipe/files/certs
                     openssl req -x509 -newkey rsa:4096 -keyout server.key -out server.crt -days 365 --nodes -subj '/C=GR/O=myorganization/OU=it/CN=myorg.com'
                 '''
             }
@@ -43,21 +43,21 @@ pipeline {
                         pwd
                         echo $WORKSPACE
 
-                        ansible-playbook -i ~/workspace/ansible-project/hosts.yml -l database ~/workspace/ansible-project/playbooks/postgres.yml
+                        ansible-playbook -i ~/workspace/ansible-pipe/hosts.yml -l database ~/workspace/ansible-pipe/playbooks/postgres.yml
                         '''
             //}
             }
         }
-        // stage('deploym to vm 1') {
-        //     steps{
-        //         sshagent (credentials: ['ssh-deployment-1']) {
-        //             sh '''
-        //                 ansible-playbook -i ~/workspace/ansible-project/hosts.yml -l deploymentservers ~/workspace/ansible-project/playbooks/django-project-install.yml
-        //             '''
-        //         }
+        stage('deploy to vm 1') {
+            steps{
+                sshagent (credentials: ['key1']) {
+                    sh '''
+                        ansible-playbook -i ~/workspace/ansible-pipe/hosts.yml -l deploymentservers ~/workspace/ansible-pipe/playbooks/django-project-install.yml
+                    '''
+                }
 
-        //     }
+            }
 
-        // }
+        }
     }
 }
